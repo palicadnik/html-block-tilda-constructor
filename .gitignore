@@ -1,0 +1,57 @@
+# dependencies
+node_modules/
+bower_components/
+
+# production
+dist/
+build/
+out/
+public/build/
+public/dist/
+.next/
+.vercel/
+.tmp/
+.temp/
+
+# misc
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# local env files
+.env
+.env.*
+!.env.example
+
+# testing
+coverage/
+coverage-final.json
+nyc_output/
+
+# editor configs
+*.swp
+*.swo
+
+# storybook
+storybook-static/
+
+# typescript
+*.tsbuildinfo
+
+# parcel-bundler
+.cache/
+.parcel-cache/
+
+# eslint cache
+.eslintcache
+
+# vite
+node_modules/.vite/
