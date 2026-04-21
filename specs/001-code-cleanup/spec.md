@@ -56,6 +56,13 @@
 - Что происходит при удалении функции, которая могла вызываться из Tilda-контекста (не из нашего кода)?
 - Как убедиться, что `localStorage` ключ не используется между сессиями, если удалить `loadFromLocalStorage`?
 
+## Clarifications
+
+### Session 2026-03-28
+
+- Q: Уведомления (`showNotification`): добавить HTML-элемент `#notification` или удалить функцию? → A: Добавить `<div id="notification">` в HTML, чтобы уведомления заработали
+- Q: `saveToLocalStorage` вызывается, но `loadFromLocalStorage` — нет; удалить обе? → A: Да, удалить обе функции и все вызовы `saveToLocalStorage`
+
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
@@ -76,14 +83,14 @@
 2. **Дублированный `console.log('Start Script 3')`** — одинаковый вызов в двух местах
 3. **Функция `getSizesArray()`** — нигде не вызывается; логика дублирует `showSizeOptions`
 4. **Функция `showPalette()`** — обёртка над `loadSwatches()`, нигде не вызывается
-5. **Переменная `notification`** — ссылается на `#notification`, которого нет в HTML; `showNotification` молча ничего не делает
+5. **Отсутствует HTML-элемент `#notification`** — необходимо добавить `<div id="notification" class="notification"></div>` в HTML, чтобы функция `showNotification` заработала
 6. **Переменная `currentCategory`** — установлена в `'solids'`, нигде не читается
 7. **Функция `updateAllImagesForConfig()`** — объявлена, но не вызывается; используется `updateImagesForConfig`
-8. **Функция `loadFromLocalStorage()`** — объявлена, но не вызывается
+8. **Функции `loadFromLocalStorage()` и `saveToLocalStorage()`** — `load` не вызывается, `save` вызывается но данные никогда не читаются; удалить обе и все вызовы `saveToLocalStorage`
 9. **Ссылки на `window.applyToAllPillows` и `window.applyToAllBlankets`** — проверяются в коде, но нигде не устанавливаются (всегда `undefined`)
 10. **Дублирующиеся ID `"pillows14"`** — у 5 товаров: ЛЕЙКА, ЛУГ, РАСКРАСКА, ТИХИЙ ЧАС, ТОЧКА ЗАПЯТАЯ
 11. **Дублирующийся ID `"mattresses9"`** — у товаров ТОПЛЕНОЕ МОЛОКО и НЕБО в mattresses.solids
-12. **Отсутствует HTML-элемент `<div id="notification">`** — функция `showNotification` не работает
+12. **Отсутствует HTML-элемент `<div id="notification">`** — MUST добавить элемент для работы уведомлений
 
 ### Key Entities
 
@@ -103,6 +110,6 @@
 ## Assumptions
 
 - Функции, не вызываемые из нашего кода в `page1.html`, также не вызываются из внешнего Tilda-контекста (за исключением `window.proceedToCheckout`, `window.showNotification` и других явно глобальных функций через `window.`)
-- `loadFromLocalStorage` не вызывается из других скриптов на странице Tilda
-- Неработающая функциональность уведомлений (`showNotification`) связана с отсутствием HTML-элемента `#notification` и требует создания этого элемента, а не удаления функции
+- `loadFromLocalStorage` и `saveToLocalStorage` не вызываются из других скриптов на странице Tilda; обе безопасно удалить
+- Уведомления (`showNotification`) не работают из-за отсутствия HTML-элемента `#notification`; решение — добавить элемент, функцию сохранить
 - Условия `applyToAllPillows` / `applyToAllBlankets` — это запланированная, но нереализованная функциональность, которую безопасно удалить

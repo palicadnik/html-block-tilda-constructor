@@ -45,3 +45,10 @@ No build or test commands. To develop:
 - `updateAllImagesForConfig()` — updates bed preview images
 - `proceedToCheckout()` — sends selections to Tilda cart
 - `removeItemFromOrder()` — removes a selection
+
+## Active Technologies
+- Vanilla HTML/CSS/JavaScript (ES6+) + Нет (Tilda platform APIs используются через глобальные функции) (001-code-cleanup)
+- N/A (localStorage удаляется в рамках этой задачи) (001-code-cleanup)
+
+## Recent Changes
+- 001-code-cleanup: Added Vanilla HTML/CSS/JavaScript (ES6+) + Нет (Tilda platform APIs используются через глобальные функции)

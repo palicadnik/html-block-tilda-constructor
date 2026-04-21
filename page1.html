@@ -1,5 +1,3 @@
-
-
 <!-- layout container -->
 <div class="customizer-container">
   <!-- Right Side - Customization Panel (Scrollable) -->
@@ -75,6 +73,7 @@
       <button class="tilda-button back-btn" style="display: none;">НАЗАД</button>
     </div>
   </div>
+  <div id="notification" class="notification"></div>
 </div>
 
 <style>
@@ -342,7 +341,7 @@
   .blanket1-btn, .blanket2-btn, .mattress-btn {
     pointer-events: auto !important;
     cursor: pointer !important;
-    z-index: 10000 !important; /* Повышаем z-index */
+    z-index: 50 !important;
   }
 
   /* Индикатор наведения и клика */
@@ -362,16 +361,13 @@
   
   .pillow1-btn.selected, .pillow2-btn.selected, .pillow3-btn.selected, .pillow4-btn.selected,
   .blanket1-btn.selected, .blanket2-btn.selected, .mattress-btn.selected {
-    border: 1px solid #000 !important;
+    outline: 1px solid #000 !important;
   }
 </style>
 
 <script>
   // Function to proceed to checkout (make it global for onclick handler and delegation)
   window.proceedToCheckout = function() {
-    console.log('proceedToCheckout initiated.');
-    console.log('User selections:', userSelections);
-
     // Check if Tilda cart function is available
     if (typeof tcart__addProduct !== 'function') {
       console.error('Tilda cart function not found. Ensure the cart block is present and loaded');
@@ -401,20 +397,19 @@
           const sizeObj = product.sizes.find(s => s.size === size);
           const price = sizeObj ? sizeObj.price : 0;
 
-          console.log(`Adding to cart: ${displayName}, SKU: ${finalSku}, Price: ${price}`);
-
-          // Add to Tilda cart
+          // externalid — идентификатор модификации для синхронизации остатков Tilda ↔ МойСклад
           tcart__addProduct({
             name: displayName,
             price: price,
             sku: finalSku,
             img: product.picture,
+            externalid: sizeObj?.externalCode,
           });
         }
       });
 
       // Show success message
-      showNotification('Выбранные товары добавлены в корзину!');
+      // showNotification('Выбранные товары добавлены в корзину!');
 
       // Optional: Open cart automatically after short delay
       setTimeout(() => {
@@ -429,2144 +424,35 @@
     }
   };
 
-  document.addEventListener('DOMContentLoaded', function() {
-    const products = {
-      "pillows": {
-        "solids": [
-          {
-            "id": "pillows4",
-            "name": "ТОПЛЕНОЕ МОЛОКО",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3463-6330-4566-b838-666666326331/01_03_moloko_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild6162-3434-4864-b434-363339663962/01_03_moloko_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3730-6465-4039-a663-613732393464/02_4_moloko_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6636-6437-4634-b733-303837316133/02_4_moloko_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild3665-3634-4561-a230-353735386661/02_4_moloko_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild3339-6338-4936-a565-326662363030/02_4_moloko_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА ТОПЛЕНОЕ МОЛОКО",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 29
-              },
-              {
-                "size": "70х70 см",
-                "price": 1600.0,
-                "count": 19
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3963-3132-4332-b139-383434626535/toplenka.png"
-          },
-          {
-            "id": "pillows6",
-            "name": "НЕБО",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3661-6166-4632-b661-306530343433/01_03_nebo_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild6530-3134-4065-b430-366636653561/01_03_nebo_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6335-3031-4565-a532-376339313333/02_4_nebo_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6664-3836-4836-b630-383462396463/02_4_nebo_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild3235-6364-4330-a335-303861396130/02_4_nebo_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild3034-3564-4430-b630-633161393134/02_4_nebo_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА НЕБО",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 41
-              },
-              {
-                "size": "70х70 см",
-                "price": 1600.0,
-                "count": 13
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6635-3230-4238-b338-376366376566/nebo.png"
-          },
-          {
-            "id": "pillows10",
-            "name": "МАЛИНКА",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3933-6164-4937-a333-313566393563/01_03_malinka_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3962-3534-4735-b965-353238633333/01_03_malinka_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3630-3933-4463-b831-376138646430/02_04_malinka_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6136-3831-4138-a231-336663646637/02_04_malinka_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild6539-3965-4237-b634-343361633339/02_04_malinka_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild3535-6537-4262-b739-323137363834/02_04_malinka_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА МАЛИНКА",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 66
-              },
-              {
-                "size": "70х70 см",
-                "price": 1600.0,
-                "count": 18
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6432-3737-4339-a538-373761346339/malinka_1.png"
-          },
-          {
-            "id": "pillows12",
-            "name": "МОРКОВКА",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6265-6630-4639-b664-343139333130/01_3_morkovka_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3234-3863-4333-a565-333738626432/01_3_morkovka_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6433-6138-4130-a230-656362386332/02_4_morkovka_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3832-3966-4330-b438-626266363333/02_4_morkovka_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild6262-6537-4338-b536-633562623034/02_4_morkovka_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild3436-6330-4232-a436-333433306130/02_4_morkovka_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА МОРКОВКА",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 170
-              },
-              {
-                "size": "70х70 см",
-                "price": 1600.0,
-                "count": 12
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6631-6631-4135-b439-633035663139/morkovka.png"
-          },
-          {
-            "id": "pillows20",
-            "name": "ИЮЛЬ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6538-3938-4734-a265-323333356466/01_03_iyul_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3463-6563-4335-b636-366166613835/01_03_iyul_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3938-3638-4364-a231-393530376137/02_4_iyul_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3438-3864-4531-b138-303832346363/02_4_iyul_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild6339-6265-4235-b437-646538633939/02_4_iyul_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild6330-6433-4431-a335-383330666533/02_4_iyul_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА ИЮЛЬ",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 133
-              },
-              {
-                "size": "70х70 см",
-                "price": 1600.0,
-                "count": 7
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6261-3262-4962-b965-353636323262/july.png"
-          },
-          {
-            "id": "pillows24",
-            "name": "ЛЕТО",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3937-6634-4236-b763-653862323164/01_3_leto_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3539-3033-4438-b933-656465383637/01_3_leto_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3434-6466-4464-b138-616666623864/02_4_leto_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6635-6466-4535-b738-316333356533/02_4_leto_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild6530-6638-4066-a134-363038373562/02_4_leto_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild3332-3731-4134-b266-623863616334/02_4_leto_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА ЛЕТО",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1600.0,
-                "count": 38
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6236-6661-4263-b361-343964383239/leto.png"
-          },
-          {
-            "id": "pillows26",
-            "name": "СЛИВОЧНОЕ МАСЛО",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3063-3662-4665-a264-303138383538/01_03_LIMONAD_pod01j.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3731-6165-4531-a131-666164313031/01_03_LIMONAD_pod02j.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6533-3739-4262-a464-653535356138/02_04_LIMONAD_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3762-3937-4839-b034-373437613139/02_04_LIMONAD_pod02j.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild6331-6366-4934-a130-616533373838/02_04_LIMONAD_pod03j.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild3038-6137-4338-b665-643865643133/02_04_LIMONAD_pod04j.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА СЛИВОЧНОЕ МАСЛО",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 60
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3734-3364-4033-a463-643563316664/sliv_maslo.png"
-          },
-          {
-            "id": "pillows27",
-            "name": "КОЛОКОЛЬЧИК",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6336-3135-4466-b965-383166383532/01_03_VASILKI_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3037-3365-4633-b737-306636363933/01_03_VASILKI_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6633-6136-4530-b337-643838626237/02_04_VASILKI_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6530-3366-4330-b261-643734343634/02_04_VASILKI_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild6662-3830-4436-b066-663232393834/02_04_VASILKI_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild3763-6333-4634-b637-613633363162/02_04_VASILKI_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА КОЛОКОЛЬЧИК",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 52
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6437-3034-4330-b663-373039616265/kolokolchik.png"
-          },
-          {
-            "id": "pillows28",
-            "name": "РУМЯНЕЦ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3639-6437-4463-b861-303536613264/01_03_PUDRA_pod01jpg.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3564-6539-4236-a363-306136663534/01_03_PUDRA_pod02jpg.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3065-6533-4961-b935-613162383062/02_04_PUDRA_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3230-3731-4732-a630-306533653363/02_04_PUDRA_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild3237-3032-4265-b461-636136613562/02_04_PUDRA_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild3136-3566-4537-b833-343233306535/02_04_PUDRA_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА РУМЯНЕЦ",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 60
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6134-6337-4031-b435-623531346563/rumyanets.png"
-          },
-          {
-            "id": "pillows29",
-            "name": "КАКАО",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3635-3030-4366-b362-396463326461/01_03_KAKAO_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild6564-3035-4336-b364-313061356235/01_03_KAKAO_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6635-6234-4266-b631-353532386134/02_04_KAKAO_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3136-6662-4332-b561-353566363934/02_04_KAKAO_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild3334-6166-4233-b762-326231313466/02_04_KAKAO_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild6237-3866-4335-b032-646663613734/02_04_KAKAO_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА КАКАО",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 71
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6232-6135-4263-b466-316230306631/kakao.png"
-          }
-        ],
-        "prints": [
-          {
-            "id": "pillows8",
-            "name": "У БАБУШКИ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6537-6666-4134-b039-336530623964/01_3_u_babushki_pod0.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3531-3837-4136-a639-663766393564/01_3_u_babushki_pod0.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3432-6438-4535-b534-373262626235/02_04_u_babushki_pod.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3539-6334-4132-a134-616133623938/02_04_u_babushki_pod.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild6361-6232-4062-b038-626336346530/02_04_u_babushki_pod.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild6230-6162-4030-b136-663639353038/02_04_u_babushki_pod.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА У БАБУШКИ",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 98
-              },
-              {
-                "size": "70х70 см",
-                "price": 1600.0,
-                "count": 4
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3034-3663-4564-a138-303338666338/u_babushki.png"
-          },
-          {
-            "id": "pillows14",
-            "name": "БОН ПАРИ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3065-6263-4830-a461-383630613933/01_03_BONPARI_pod01j.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild6333-6661-4663-b332-633963303731/01_03_BONPARI_pod02j.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6138-6436-4031-a138-613466626132/02_04_BONPARI_pod01j.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3264-3837-4465-a466-623261386436/02_04_BONPARI_pod02j.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild3964-3338-4964-b135-323365346364/02_04_BONPARI_pod03j.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild3564-3633-4138-b130-396336663436/02_04_BONPARI_pod04j.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА БОН ПАРИ",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1600.0,
-                "count": 23
-              },
-              {
-                "size": "70х70 см",
-                "price": 1700.0,
-                "count": 53
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3739-3237-4465-b237-386630323662/bonpari.png"
-          },
-          {
-            "id": "pillows2",
-            "name": "ПОЛЕЖИ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3532-3562-4264-b439-643862306131/01_3_polezhi_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3133-6531-4237-a237-643264643039/01_3_polezhi_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6636-3432-4566-b439-626338303261/02_4_polezhi_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3333-6634-4564-b861-643161623133/02_4_polezhi_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild3266-6534-4466-b634-303438313933/02_4_polezhi_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild6461-3036-4662-b039-663430303562/02_4_polezhi_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА ПОЛЕЖИ",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 88
-              },
-              {
-                "size": "70х70 см",
-                "price": 1600.0,
-                "count": 3
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6166-3234-4730-b464-616464643361/polezhi.png"
-          },
-          {
-            "id": "pillows14",
-            "name": "ЛЕЙКА",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3331-3237-4136-b535-326539633538/01_03__01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3264-3536-4230-b535-633834316164/01_03__02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3538-6363-4664-b537-633139353239/02_04__01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6166-3063-4933-b434-623033373137/02_04__02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild3833-6236-4331-a637-373635393333/02_04__03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild6636-3734-4534-b834-353136323938/02_04__04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА ЛЕЙКА",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1600.0,
-                "count": 23
-              },
-              {
-                "size": "70х70 см",
-                "price": 1700.0,
-                "count": 53
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6161-6635-4261-b633-346662383132/LEYKA.png"
-          },
-          {
-            "id": "pillows14",
-            "name": "ЛУГ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3234-6135-4630-b536-303834663333/01_03_LUG_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3861-3136-4935-b638-623161366233/01_03_LUG_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3962-3338-4439-b364-306539346632/02_04_LUG_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6662-3766-4464-a537-383862626238/02_04_LUG_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild6138-6336-4666-a533-633866633631/02_04_LUG_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild6361-6236-4366-a235-343635303765/02_04_LUG_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА ЛУГ",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1600.0,
-                "count": 23
-              },
-              {
-                "size": "70х70 см",
-                "price": 1700.0,
-                "count": 53
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3139-3463-4833-a230-656365323361/lug.png"
-          },
-          {
-            "id": "pillows14",
-            "name": "РАСКРАСКА",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6561-3230-4139-a338-363936633439/01_03_RASKRASKA_pod0.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild6338-3533-4164-a330-353939623964/01_03_RASKRASKA_pod0.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3438-3037-4235-b561-383964366561/02_04_RASKRASKA_pod0.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6637-6664-4931-b535-653036643739/02_04_RASKRASKA_pod0.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild3163-3463-4934-a332-383161366531/02_04_RASKRASKA_pod0.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild6262-3461-4065-b830-366136383236/02_04_RASKRASKA_pod0.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА РАСКРАСКА",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1600.0,
-                "count": 23
-              },
-              {
-                "size": "70х70 см",
-                "price": 1700.0,
-                "count": 53
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3839-3138-4331-b962-353365646565/raskraska.png"
-          },
-          {
-            "id": "pillows14",
-            "name": "ТИХИЙ ЧАС",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3861-3766-4330-a462-303963313532/01_03_tihii_chas_pod.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3739-3432-4264-a235-633430393931/01_03_tihii_chas_pod.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6161-3763-4136-b036-626134353830/02_04_tihii_chas_pod.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6364-3965-4737-a635-386563656265/02_04_tihii_chas_pod.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild3835-6239-4632-b939-363732663932/02_04_tihii_chas_pod.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild6236-3961-4435-b564-383537326630/02_04_tihii_chas_pod.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА ТИХИЙ ЧАС",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1600.0,
-                "count": 23
-              },
-              {
-                "size": "70х70 см",
-                "price": 1700.0,
-                "count": 53
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3833-3437-4632-a236-376666633637/tihiy_chas.png"
-          },
-          {
-            "id": "pillows14",
-            "name": "ТОЧКА ЗАПЯТАЯ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3139-3539-4065-b233-373539366361/01_03_TOChKA_ZAPYaTA.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3731-3265-4537-a134-306332356533/01_03_TOChKA_ZAPYaTA.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6139-3663-4466-a331-616136393734/02_04_TOChKA_ZAPYaTA.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6163-3636-4166-b463-346231316261/02_04_TOChKA_ZAPYaTA.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild6666-6636-4137-b363-393461623038/02_04_TOChKA_ZAPYaTA.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild3634-6132-4565-a262-646531363434/02_04_TOChKA_ZAPYaTA.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА ТОЧКА ЗАПЯТАЯ",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1600.0,
-                "count": 23
-              },
-              {
-                "size": "70х70 см",
-                "price": 1700.0,
-                "count": 53
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3035-6339-4361-a665-303862383563/tochka.png"
-          },
-          {
-            "id": "pillows16",
-            "name": "РАССВЕТ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6335-3034-4661-a433-313134376537/01_03_rassvet_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3634-3837-4964-b961-343165653438/01_03_rassvet_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6536-3638-4235-a439-326362396334/02_04_rassvet_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3738-3830-4234-a536-616465306335/02_04_rassvet_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild6135-6631-4232-a366-376132306537/02_04_rassvet_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild3338-6234-4134-b133-393932626534/02_04_rassvet_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА РАССВЕТ",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 79
-              },
-              {
-                "size": "70х70 см",
-                "price": 1600.0,
-                "count": 10
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3232-3365-4531-b035-396434633739/rassvet.png"
-          },
-          {
-            "id": "pillows18",
-            "name": "ЗАКАТ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6635-3131-4037-b162-383164323935/01_3_zakat_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild6135-6433-4037-b433-396539353038/01_3_zakat_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3064-6466-4239-a130-666231643063/02_4_zakat_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6464-6561-4265-b135-353131643533/02_4_zakat_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild3966-6133-4864-a132-356261303864/02_4_zakat_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild3262-3930-4139-b339-643033636432/02_4_zakat_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА ЗАКАТ",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 65
-              },
-              {
-                "size": "70х70 см",
-                "price": 1600.0,
-                "count": 11
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3662-3938-4231-b834-653937386165/zakat.png"
-          },
-          {
-            "id": "pillows22",
-            "name": "СТАНЦИЯ ОТДЫХ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3737-6638-4766-a537-303433666637/01_3_stanciya_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild6235-3133-4834-b065-316636306164/01_3_stanciya_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6166-3032-4939-b933-663638353330/02_4_stanciya_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6166-3938-4962-b565-613765663832/02_4_stanciya_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild3434-3537-4364-b934-326331333930/02_4_stanciya_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild6633-3363-4237-a563-313434303237/02_4_stanciya_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА СТАНЦИЯ ОТДЫХ",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 120
-              },
-              {
-                "size": "70х70 см",
-                "price": 1600.0,
-                "count": 3
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3762-6338-4064-a631-383662663664/stanciya.png"
-          },
-          {
-            "id": "pillows25",
-            "name": "РЕЛЬСЫ РЕЛЬСЫ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6631-6134-4539-a162-363236656265/01_03_RELSY_pod01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild6433-3039-4661-b439-383030383765/01_03_RELSY_pod02.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3536-3433-4535-b136-386366343037/02_04_RELSY_pod01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3235-6236-4534-b538-393730616561/02_04_RELSY_pod02.png"
-              },
-              {
-                "kind": "3/4",
-                "url": "https://static.tildacdn.com/tild3137-3630-4234-b431-393533353533/02_04_RELSY_pod03.png"
-              },
-              {
-                "kind": "4/4",
-                "url": "https://static.tildacdn.com/tild3537-6231-4131-b739-626438383466/02_04_RELSY_pod04.png"
-              }
-            ],
-            "sku": "НАВОЛОЧКА РЕЛЬСЫ РЕЛЬСЫ",
-            "sizes": [
-              {
-                "size": "50х70 см",
-                "price": 1500.0,
-                "count": 70
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3666-6638-4864-a533-666339666463/relsy.png"
-          },
-        ]
-      },
-      "blankets": {
-        "solids": [
-          {
-            "id": "blankets1",
-            "name": "ТОПЛЕНОЕ МОЛОКО",
-            "image": [
-              {
-                "kind": "1/1/2",
-                "url": "https://static.tildacdn.com/tild3837-3262-4330-b837-633730363331/01_moloko_od01.png"
-              },
-              {
-                "kind": "1/2/2",
-                "url": "https://static.tildacdn.com/tild3761-3032-4662-b738-326333613837/03_moloko_od01.png"
-              },
-              {
-                "kind": "2/2/2",
-                "url": "https://static.tildacdn.com/tild6333-3263-4435-b064-306339343530/03_moloko_od02.png"
-              },
-              {
-                "kind": "1/1/4",
-                "url": "https://static.tildacdn.com/tild3961-3536-4135-a636-353566623063/02_moloko_od01.png"
-              },
-              {
-                "kind": "1/2/4",
-                "url": "https://static.tildacdn.com/tild3836-3331-4730-a564-623165346665/04_moloko_od01.png"
-              },
-              {
-                "kind": "2/2/4",
-                "url": "https://static.tildacdn.com/tild3336-3836-4330-b234-356435653136/04_moloko_od02.png"
-              }
-            ],
-            "sku": "ПОДОДЕЯЛЬНИК ТОПЛЕНОЕ МОЛОКО",
-            "sizes": [
-              {
-                "size": "150х200 см",
-                "price": 6800.0,
-                "count": 8
-              },
-              {
-                "size": "200х200 см",
-                "price": 8500.0,
-                "count": 10
-              },
-              {
-                "size": "200х220 см",
-                "price": 8800.0,
-                "count": 8
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3963-3132-4332-b139-383434626535/toplenka.png"
-          },
-          {
-            "id": "blankets7",
-            "name": "НЕБО",
-            "image": [
-              {
-                "kind": "1/1/2",
-                "url": "https://static.tildacdn.com/tild3039-3935-4937-a634-316534613730/01_nebo_od01.png"
-              },
-              {
-                "kind": "1/2/2",
-                "url": "https://static.tildacdn.com/tild3333-6363-4466-a332-613931306634/03_nebo_od01.png"
-              },
-              {
-                "kind": "2/2/2",
-                "url": "https://static.tildacdn.com/tild3038-6234-4161-a333-303664346538/03_nebo_od02.png"
-              },
-              {
-                "kind": "1/1/4",
-                "url": "https://static.tildacdn.com/tild6536-3331-4338-b030-623262333632/02_nebo_od01.png"
-              },
-              {
-                "kind": "1/2/4",
-                "url": "https://static.tildacdn.com/tild6231-3066-4031-b431-663266373638/04_nebo_od01.png"
-              },
-              {
-                "kind": "2/2/4",
-                "url": "https://static.tildacdn.com/tild3565-3466-4466-a438-376134366132/04_nebo_od02.png"
-              }
-            ],
-            "sku": "ПОДОДЕЯЛЬНИК НЕБО",
-            "sizes": [
-              {
-                "size": "150х200 см",
-                "price": 6800.0,
-                "count": 11
-              },
-              {
-                "size": "200х200 см",
-                "price": 8500.0,
-                "count": 11
-              },
-              {
-                "size": "200х220 см",
-                "price": 8800.0,
-                "count": 5
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6635-3230-4238-b338-376366376566/nebo.png"
-          },
-          {
-            "id": "blankets10",
-            "name": "ИЮЛЬ",
-            "image": [
-              {
-                "kind": "1/1/2",
-                "url": "https://static.tildacdn.com/tild3763-3135-4535-b730-363163636363/01_iyul_od01.png"
-              },
-              {
-                "kind": "1/2/2",
-                "url": "https://static.tildacdn.com/tild6563-3631-4662-b535-366636323566/03_iyul_od01.png"
-              },
-              {
-                "kind": "2/2/2",
-                "url": "https://static.tildacdn.com/tild3235-3032-4561-a130-336436393162/03_iyul_od02.png"
-              },
-              {
-                "kind": "1/1/4",
-                "url": "https://static.tildacdn.com/tild3363-6335-4936-b736-353433643634/02_iyul_od01.png"
-              },
-              {
-                "kind": "1/2/4",
-                "url": "https://static.tildacdn.com/tild3935-3665-4635-a430-373365393833/04_iyul_od01.png"
-              },
-              {
-                "kind": "2/2/4",
-                "url": "https://static.tildacdn.com/tild6139-3932-4364-a166-343661356239/04_iyul_od02.png"
-              }
-            ],
-            "sku": "ПОДОДЕЯЛЬНИК ИЮЛЬ",
-            "sizes": [
-              {
-                "size": "150х200 см",
-                "price": 6800.0,
-                "count": 20
-              },
-              {
-                "size": "200х200 см",
-                "price": 8500.0,
-                "count": 12
-              },
-              {
-                "size": "200х220 см",
-                "price": 8800.0,
-                "count": 7
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6261-3262-4962-b965-353636323262/july.png"
-          },
-          {
-            "id": "blankets16",
-            "name": "МАЛИНКА",
-            "image": [
-              {
-                "kind": "1/1/2",
-                "url": "https://static.tildacdn.com/tild3035-3230-4266-b966-643230616333/01_malinka_pro01.png"
-              },
-              {
-                "kind": "1/2/2",
-                "url": "https://static.tildacdn.com/tild6162-3966-4535-a434-643836666438/03_malinka_od01.png"
-              },
-              {
-                "kind": "2/2/2",
-                "url": "https://static.tildacdn.com/tild6537-3961-4963-b939-393763393034/03_malinka_od02.png"
-              },
-              {
-                "kind": "1/1/4",
-                "url": "https://static.tildacdn.com/tild6662-3462-4732-b163-636363616231/02_malinka_od01.png"
-              },
-              {
-                "kind": "1/2/4",
-                "url": "https://static.tildacdn.com/tild3531-6439-4239-b261-383265343336/04_malinka_od01.png"
-              },
-              {
-                "kind": "2/2/4",
-                "url": "https://static.tildacdn.com/tild6663-3030-4639-b137-396133376136/04_malinka_od02.png"
-              }
-            ],
-            "sku": "ПОДОДЕЯЛЬНИК МАЛИНКА",
-            "sizes": [
-              {
-                "size": "150х200 см",
-                "price": 6800.0,
-                "count": 12
-              },
-              {
-                "size": "200х200 см",
-                "price": 8500.0,
-                "count": 3
-              },
-              {
-                "size": "200х220 см",
-                "price": 8800.0,
-                "count": 6
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6432-3737-4339-a538-373761346339/malinka_1.png"
-          },
-          {
-            "id": "blankets19",
-            "name": "МОРКОВКА",
-            "image": [
-              {
-                "kind": "1/1/2",
-                "url": "https://static.tildacdn.com/tild6636-6635-4537-a466-336531383563/01_morkovka_od01.png"
-              },
-              {
-                "kind": "1/2/2",
-                "url": "https://static.tildacdn.com/tild3733-6237-4437-a638-376333353233/03_morkovka_od01.png"
-              },
-              {
-                "kind": "2/2/2",
-                "url": "https://static.tildacdn.com/tild6363-3838-4232-b439-313736343332/03_morkovka_od02.png"
-              },
-              {
-                "kind": "1/1/4",
-                "url": "https://static.tildacdn.com/tild3433-3234-4564-b134-623132623366/02_morkovka_od01.png"
-              },
-              {
-                "kind": "1/2/4",
-                "url": "https://static.tildacdn.com/tild3231-6431-4465-b636-656338316466/04_morkovka_od01.png"
-              },
-              {
-                "kind": "2/2/4",
-                "url": "https://static.tildacdn.com/tild6533-3736-4462-b463-366139663636/04_morkovka_od02.png"
-              }
-            ],
-            "sku": "ПОДОДЕЯЛЬНИК МОРКОВКА",
-            "sizes": [
-              {
-                "size": "150х200 см",
-                "price": 6800.0,
-                "count": 15
-              },
-              {
-                "size": "200х200 см",
-                "price": 8500.0,
-                "count": 9
-              },
-              {
-                "size": "200х220 см",
-                "price": 8800.0,
-                "count": 5
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6631-6631-4135-b439-633035663139/morkovka.png"
-          },
-          {
-            "id": "blankets34",
-            "name": "КАКАО",
-            "image": [
-              {
-                "kind": "1/1/2",
-                "url": "https://static.tildacdn.com/tild3561-3135-4738-a232-633363343238/01_KAKAO_od01.png"
-              },
-              {
-                "kind": "1/2/2",
-                "url": "https://static.tildacdn.com/tild3733-3934-4762-a234-313466373034/03_KAKAO_od01.png"
-              },
-              {
-                "kind": "2/2/2",
-                "url": "https://static.tildacdn.com/tild6636-3239-4132-b166-316633376638/03_KAKAO_od02.png"
-              },
-              {
-                "kind": "1/1/4",
-                "url": "https://static.tildacdn.com/tild3665-6232-4562-b761-306666336565/02_KAKAO_od01.png"
-              },
-              {
-                "kind": "1/2/4",
-                "url": "https://static.tildacdn.com/tild3238-3562-4663-b163-626635326337/04_KAKAO_od01.png"
-              },
-              {
-                "kind": "2/2/4",
-                "url": "https://static.tildacdn.com/tild6361-3362-4165-b731-626364663462/04_KAKAO_od02.png"
-              }
-            ],
-            "sku": "ПОДОДЕЯЛЬНИК КАКАО",
-            "sizes": [
-              {
-                "size": "150х200 см",
-                "price": 6800.0,
-                "count": 10
-              },
-              {
-                "size": "200х200 см",
-                "price": 8500.0,
-                "count": 9
-              },
-              {
-                "size": "200х220 см",
-                "price": 8800.0,
-                "count": 6
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6232-6135-4263-b466-316230306631/kakao.png"
-          }
-        ],
-        "prints": [
-          {
-            "id": "blankets4",
-            "name": "ПОЛЕЖИ",
-            "image": [
-              {
-                "kind": "1/1/2",
-                "url": "https://static.tildacdn.com/tild6435-3834-4230-b735-353133353065/01_polezhi_od01.png"
-              },
-              {
-                "kind": "1/2/2",
-                "url": "https://static.tildacdn.com/tild3933-3636-4064-a138-383566653066/3_polezhi_od01.png"
-              },
-              {
-                "kind": "2/2/2",
-                "url": "https://static.tildacdn.com/tild3831-6439-4430-a365-363965343166/3_polezhi_od02.png"
-              },
-              {
-                "kind": "1/1/4",
-                "url": "https://static.tildacdn.com/tild3561-3530-4732-b764-393733376237/02_polezhi_od01.png"
-              },
-              {
-                "kind": "1/2/4",
-                "url": "https://static.tildacdn.com/tild3566-3136-4033-b865-663164623261/04_polezhi_od01.png"
-              },
-              {
-                "kind": "2/2/4",
-                "url": "https://static.tildacdn.com/tild6136-3233-4266-a535-303735623631/04_polezhi_od02.png"
-              }
-            ],
-            "sku": "ПОДОДЕЯЛЬНИК ПОЛЕЖИ",
-            "sizes": [
-              {
-                "size": "150х200 см",
-                "price": 6800.0,
-                "count": 20
-              },
-              {
-                "size": "200х200 см",
-                "price": 8500.0,
-                "count": 11
-              },
-              {
-                "size": "200х220 см",
-                "price": 8800.0,
-                "count": 6
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6166-3234-4730-b464-616464643361/polezhi.png"
-          },
-          {
-            "id": "blankets13",
-            "name": "У БАБУШКИ",
-            "image": [
-              {
-                "kind": "1/1/2",
-                "url": "https://static.tildacdn.com/tild6539-3639-4864-b266-313031326530/01_u_babushki_od01.png"
-              },
-              {
-                "kind": "1/2/2",
-                "url": "https://static.tildacdn.com/tild3439-3131-4861-b430-626532326563/03_u_babushki_od01.png"
-              },
-              {
-                "kind": "2/2/2",
-                "url": "https://static.tildacdn.com/tild3232-3439-4438-a134-343439313830/03_u_babushki_od02.png"
-              },
-              {
-                "kind": "1/1/4",
-                "url": "https://static.tildacdn.com/tild3066-3235-4231-b033-636533356630/02_u_babushki_od01.png"
-              },
-              {
-                "kind": "1/2/4",
-                "url": "https://static.tildacdn.com/tild6533-3361-4536-b639-306335323761/04_u_babushki_od01.png"
-              },
-              {
-                "kind": "2/2/4",
-                "url": "https://static.tildacdn.com/tild6235-3764-4562-b664-653834653339/04_u_babushki_od02.png"
-              }
-            ],
-            "sku": "ПОДОДЕЯЛЬНИК У БАБУШКИ",
-            "sizes": [
-              {
-                "size": "150х200 см",
-                "price": 6800.0,
-                "count": 15
-              },
-              {
-                "size": "200х200 см",
-                "price": 8500.0,
-                "count": 22
-              },
-              {
-                "size": "200х220 см",
-                "price": 8800.0,
-                "count": 9
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3034-3663-4564-a138-303338666338/u_babushki.png"
-          },
-          {
-            "id": "blankets22",
-            "name": "РАССВЕТ",
-            "image": [
-              {
-                "kind": "1/1/2",
-                "url": "https://static.tildacdn.com/tild6231-3263-4665-a138-643430616533/01_rassvet_od01.png"
-              },
-              {
-                "kind": "1/2/2",
-                "url": "https://static.tildacdn.com/tild3433-6439-4530-b466-643264373934/03_rassvet_od01.png"
-              },
-              {
-                "kind": "2/2/2",
-                "url": "https://static.tildacdn.com/tild3438-3831-4164-a331-656462623734/03_rassvet_od02.png"
-              },
-              {
-                "kind": "1/1/4",
-                "url": "https://static.tildacdn.com/tild6639-6438-4565-b263-623633633539/02_rassvet_od01.png"
-              },
-              {
-                "kind": "1/2/4",
-                "url": "https://static.tildacdn.com/tild3137-3861-4066-a636-346433323133/04_rassvet_od01.png"
-              },
-              {
-                "kind": "2/2/4",
-                "url": "https://static.tildacdn.com/tild6535-3432-4136-b934-613437393862/04_rassvet_od02.png"
-              }
-            ],
-            "sku": "ПОДОДЕЯЛЬНИК РАССВЕТ",
-            "sizes": [
-              {
-                "size": "150х200 см",
-                "price": 6800.0,
-                "count": 20
-              },
-              {
-                "size": "200х200 см",
-                "price": 8500.0,
-                "count": 18
-              },
-              {
-                "size": "200х220 см",
-                "price": 8800.0,
-                "count": 7
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3232-3365-4531-b035-396434633739/rassvet.png"
-          },
-          {
-            "id": "blankets25",
-            "name": "ЗАКАТ",
-            "image": [
-              {
-                "kind": "1/1/2",
-                "url": "https://static.tildacdn.com/tild6561-3037-4635-b433-386233623339/01_zakat_od01.png"
-              },
-              {
-                "kind": "1/2/2",
-                "url": "https://static.tildacdn.com/tild3038-3733-4632-a665-323061623732/03_zakat_od01.png"
-              },
-              {
-                "kind": "2/2/2",
-                "url": "https://static.tildacdn.com/tild6462-6637-4833-b031-656339303161/03_zakat_od02.png"
-              },
-              {
-                "kind": "1/1/4",
-                "url": "https://static.tildacdn.com/tild3465-6161-4066-a137-393133396332/02_zakat_od01.png"
-              },
-              {
-                "kind": "1/2/4",
-                "url": "https://static.tildacdn.com/tild3931-6464-4362-b861-353838363430/04_zakat_od01.png"
-              },
-              {
-                "kind": "2/2/4",
-                "url": "https://static.tildacdn.com/tild3038-3233-4331-b666-666339613766/04_zakat_od02.png"
-              }
-            ],
-            "sku": "ПОДОДЕЯЛЬНИК ЗАКАТ",
-            "sizes": [
-              {
-                "size": "150х200 см",
-                "price": 6800.0,
-                "count": 15
-              },
-              {
-                "size": "200х200 см",
-                "price": 8500.0,
-                "count": 8
-              },
-              {
-                "size": "200х220 см",
-                "price": 8800.0,
-                "count": 3
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3662-3938-4231-b834-653937386165/zakat.png"
-          },
-          {
-            "id": "blankets28",
-            "name": "СТАНЦИЯ ОТДЫХ",
-            "image": [
-              {
-                "kind": "1/1/2",
-                "url": "https://static.tildacdn.com/tild6239-3933-4231-a430-356564613064/01_stanciya_od01.png"
-              },
-              {
-                "kind": "1/2/2",
-                "url": "https://static.tildacdn.com/tild3535-6661-4362-a364-343564323865/03_stanciya_od01.png"
-              },
-              {
-                "kind": "2/2/2",
-                "url": "https://static.tildacdn.com/tild3666-6366-4337-b438-333464643962/03_stanciya_od02.png"
-              },
-              {
-                "kind": "1/1/4",
-                "url": "https://static.tildacdn.com/tild3334-6561-4164-b439-613365333466/02_stanciya_od01.png"
-              },
-              {
-                "kind": "1/2/4",
-                "url": "https://static.tildacdn.com/tild6537-3733-4138-b139-306437336130/04_stanciya_od01.png"
-              },
-              {
-                "kind": "2/2/4",
-                "url": "https://static.tildacdn.com/tild3536-6366-4437-b663-306536373062/04_stanciya_od02.png"
-              }
-            ],
-            "sku": "ПОДОДЕЯЛЬНИК СТАНЦИЯ ОТДЫХ",
-            "sizes": [
-              {
-                "size": "150х200 см",
-                "price": 6800.0,
-                "count": 13
-              },
-              {
-                "size": "200х200 см",
-                "price": 8500.0,
-                "count": 5
-              },
-              {
-                "size": "200х220 см",
-                "price": 8800.0,
-                "count": 2
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3762-6338-4064-a631-383662663664/stanciya.png"
-          },
-          {
-            "id": "blankets31",
-            "name": "РЕЛЬСЫ РЕЛЬСЫ",
-            "image": [
-              {
-                "kind": "1/1/2",
-                "url": "https://static.tildacdn.com/tild3337-3238-4762-b562-663132663437/01_RELSY_od01.png"
-              },
-              {
-                "kind": "1/2/2",
-                "url": "https://static.tildacdn.com/tild6662-3837-4165-a239-366532633763/03_RELSY_od01.png"
-              },
-              {
-                "kind": "2/2/2",
-                "url": "https://static.tildacdn.com/tild6263-6461-4536-a131-346561383834/03_RELSY_od02.png"
-              },
-              {
-                "kind": "1/1/4",
-                "url": "https://static.tildacdn.com/tild3633-6133-4734-b138-346637323930/02_RELSY_od01.png"
-              },
-              {
-                "kind": "1/2/4",
-                "url": "https://static.tildacdn.com/tild3738-3936-4561-a639-646337303064/04_RELSY_od01.png"
-              },
-              {
-                "kind": "2/2/4",
-                "url": "https://static.tildacdn.com/tild6538-3139-4434-b733-613330383134/04_RELSY_od02.png"
-              }
-            ],
-            "sku": "ПОДОДЕЯЛЬНИК РЕЛЬСЫ РЕЛЬСЫ",
-            "sizes": [
-              {
-                "size": "150х200 см",
-                "price": 6800.0,
-                "count": 15
-              },
-              {
-                "size": "200х200 см",
-                "price": 8500.0,
-                "count": 8
-              },
-              {
-                "size": "200х220 см",
-                "price": 8800.0,
-                "count": 9
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3666-6638-4864-a533-666339666463/relsy.png"
-          },
-        ]
-      },
-      "mattresses": {
-        "solids": [
-          {
-            "id": "mattresses9",
-            "name": "ТОПЛЕНОЕ МОЛОКО",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6264-6435-4561-a234-343539633532/01_moloko_pro01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3465-6630-4036-b161-366265613532/03_moloko_pro01.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3564-3466-4164-b132-666162363366/02_moloko_pro01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3036-3464-4332-a265-393765353266/04_moloko_pro01.png"
-              }
-            ],
-            "sku": "ПРОСТЫНЯ ТОПЛЕНОЕ МОЛОКО",
-            "sizes": [
-              {
-                "size": "140х200х30 см",
-                "price": 6300.0,
-                "count": 8
-              },
-              {
-                "size": "160х200х30 см",
-                "price": 6800.0,
-                "count": 13
-              },
-              {
-                "size": "180х200х30 см",
-                "price": 7700.0,
-                "count": 7
-              },
-              {
-                "size": "200х200х30 см",
-                "price": 8200.0,
-                "count": 9
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3963-3132-4332-b139-383434626535/toplenka.png"
-          },
-          {
-            "id": "mattresses9",
-            "name": "НЕБО",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3766-3639-4164-b937-313232326366/01_nebo_pro01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3535-6639-4465-a632-376465626138/03_nebo_pro01.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3035-3632-4438-b736-366461376637/02_nebo_pro01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3639-3166-4337-a230-346237386238/04_nebo_pro01.png"
-              }
-            ],
-            "sku": "ПРОСТЫНЯ НЕБО",
-            "sizes": [
-              {
-                "size": "140х200х30 см",
-                "price": 6300.0,
-                "count": 8
-              },
-              {
-                "size": "160х200х30 см",
-                "price": 6800.0,
-                "count": 13
-              },
-              {
-                "size": "180х200х30 см",
-                "price": 7700.0,
-                "count": 7
-              },
-              {
-                "size": "200х200х30 см",
-                "price": 8200.0,
-                "count": 9
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6635-3230-4238-b338-376366376566/nebo.png"
-          },
-          {
-            "id": "mattresses1",
-            "name": "ИЮЛЬ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3865-3663-4332-b539-386337316364/01_iyul_pro01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild6230-3138-4934-a563-383630313038/03_iyul_pro01.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3364-6663-4661-a331-303731313862/02_iyul_pro01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3030-3164-4666-a464-306131393463/04_iyul_pro01.png"
-              }
-            ],
-            "sku": "ПРОСТЫНЯ ИЮЛЬ",
-            "sizes": [
-              {
-                "size": "140х200х30 см",
-                "price": 6300.0,
-                "count": 11
-              },
-              {
-                "size": "160х200х30 см",
-                "price": 6800.0,
-                "count": 16
-              },
-              {
-                "size": "180х200х30 см",
-                "price": 7700.0,
-                "count": 12
-              },
-              {
-                "size": "200х200х30 см",
-                "price": 8200.0,
-                "count": 4
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6261-3262-4962-b965-353636323262/july.png"
-          },
-          {
-            "id": "mattresses13",
-            "name": "ПОЛЕЖИ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6630-3237-4436-b839-626237303538/01_polezhi_pro01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3130-6133-4835-b233-373236623963/3_polezhi_pro01.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6536-6535-4431-b035-313539626439/02_polezhi_pro01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3131-3263-4965-b335-313134343364/04_polezhi_pro01.png"
-              }
-            ],
-            "sku": "ПРОСТЫНЯ ПОЛЕЖИ",
-            "sizes": [
-              {
-                "size": "140х200х30 см",
-                "price": 6300.0,
-                "count": 9
-              },
-              {
-                "size": "160х200х30 см",
-                "price": 6800.0,
-                "count": 7
-              },
-              {
-                "size": "180х200х30 см",
-                "price": 7700.0,
-                "count": 12
-              },
-              {
-                "size": "200х200х30 см",
-                "price": 8200.0,
-                "count": 7
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6166-3234-4730-b464-616464643361/polezhi.png"
-          },
-          {
-            "id": "mattresses19",
-            "name": "МАЛИНКА",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3635-3361-4936-a264-343936343930/01_malinka_od01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3466-3134-4166-a432-393538353162/03_malinka_pro01.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3964-6663-4538-b637-636664623433/02_malinka_pro01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3737-3564-4066-b063-303461653061/04_malinka_pro01.png"
-              }
-            ],
-            "sku": "ПРОСТЫНЯ МАЛИНКА",
-            "sizes": [
-              {
-                "size": "140х200х30 см",
-                "price": 6300.0,
-                "count": 17
-              },
-              {
-                "size": "160х200х30 см",
-                "price": 6800.0,
-                "count": 9
-              },
-              {
-                "size": "180х200х30 см",
-                "price": 7700.0,
-                "count": 11
-              },
-              {
-                "size": "200х200х30 см",
-                "price": 8200.0,
-                "count": 17
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6432-3737-4339-a538-373761346339/malinka_1.png"
-          },
-          {
-            "id": "mattresses23",
-            "name": "МОРКОВКА",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6136-3562-4936-b530-343734343565/01_morkovka_pro01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3630-3835-4964-a437-343632326565/03_morkovka_pro01.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3663-3231-4564-b536-613333616430/02_morkovka_pro01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3036-6633-4138-b337-333033313061/04_morkovka_pro01.png"
-              }
-            ],
-            "sku": "ПРОСТЫНЯ МОРКОВКА",
-            "sizes": [
-              {
-                "size": "140х200х30 см",
-                "price": 6300.0,
-                "count": 14
-              },
-              {
-                "size": "160х200х30 см",
-                "price": 6800.0,
-                "count": 11
-              },
-              {
-                "size": "180х200х30 см",
-                "price": 7700.0,
-                "count": 5
-              },
-              {
-                "size": "200х200х30 см",
-                "price": 8200.0,
-                "count": 7
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6631-6631-4135-b439-633035663139/morkovka.png"
-          },
-          {
-            "id": "mattresses43",
-            "name": "КАКАО",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3062-3632-4732-a639-663461336633/01_KAKAO_pro01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3065-3233-4837-b530-643237363665/03_KAKAO_pro01.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3663-6534-4636-b137-623738343531/02_KAKAO_pro01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3338-3532-4065-a331-333062623865/04_KAKAO_pro01.png"
-              }
-            ],
-            "sku": "ПРОСТЫНЯ КАКАО",
-            "sizes": [
-              {
-                "size": "140х200х30 см",
-                "price": 6300.0,
-                "count": 6
-              },
-              {
-                "size": "160х200х30 см",
-                "price": 6800.0,
-                "count": 6
-              },
-              {
-                "size": "180х200х30 см",
-                "price": 7700.0,
-                "count": 7
-              },
-              {
-                "size": "200х200х30 см",
-                "price": 8200.0,
-                "count": 6
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild6232-6135-4263-b466-316230306631/kakao.png"
-          }
-        ],
-        "prints": [
-          {
-            "id": "mattresses5",
-            "name": "У БАБУШКИ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6465-6563-4362-a532-353761356664/01_u_babushki_pro01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3635-3636-4463-b361-643733383061/03_u_babushki_pro01.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3966-3432-4536-a664-633832616434/02_u_babushki_pro01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6539-6464-4063-a230-623965393034/04_u_babushki_pro01.png"
-              }
-            ],
-            "sku": "ПРОСТЫНЯ У БАБУШКИ",
-            "sizes": [
-              {
-                "size": "140х200х30 см",
-                "price": 6300.0,
-                "count": 9
-              },
-              {
-                "size": "160х200х30 см",
-                "price": 6800.0,
-                "count": 20
-              },
-              {
-                "size": "180х200х30 см",
-                "price": 7700.0,
-                "count": 21
-              },
-              {
-                "size": "200х200х30 см",
-                "price": 8200.0,
-                "count": 12
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3034-3663-4564-a138-303338666338/u_babushki.png"
-          },
-          {
-            "id": "mattresses39",
-            "name": "РЕЛЬСЫ РЕЛЬСЫ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6437-3431-4462-b137-613465316631/01_03_RELSY_pro01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3039-3539-4166-a163-313434623265/03_RELSY_pro01.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3634-6332-4633-a163-333331383337/02_RELSY_pro01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3831-3331-4639-b837-303963633461/04_RELSY_pro01.png"
-              }
-            ],
-            "sku": "ПРОСТЫНЯ РЕЛЬСЫ РЕЛЬСЫ",
-            "sizes": [
-              {
-                "size": "140х200х30 см",
-                "price": 6300.0,
-                "count": 5
-              },
-              {
-                "size": "160х200х30 см",
-                "price": 6800.0,
-                "count": 7
-              },
-              {
-                "size": "180х200х30 см",
-                "price": 7700.0,
-                "count": 8
-              },
-              {
-                "size": "200х200х30 см",
-                "price": 8200.0,
-                "count": 6
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3666-6638-4864-a533-666339666463/relsy.png"
-          },
-          {
-            "id": "mattresses35",
-            "name": "СТАНЦИЯ ОТДЫХ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6434-3634-4265-b131-653439316666/01_stanciya_pro01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3830-3835-4862-b166-386334343366/03_stanciya_pro01.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild3866-3137-4262-a163-396430323063/02_stanciya_pro01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3136-3033-4133-a330-383733383462/04_stanciya_pro01.png"
-              }
-            ],
-            "sku": "ПРОСТЫНЯ СТАНЦИЯ ОТДЫХ",
-            "sizes": [
-              {
-                "size": "140х200х30 см",
-                "price": 6300.0,
-                "count": 7
-              },
-              {
-                "size": "160х200х30 см",
-                "price": 6800.0,
-                "count": 9
-              },
-              {
-                "size": "180х200х30 см",
-                "price": 7700.0,
-                "count": 10
-              },
-              {
-                "size": "200х200х30 см",
-                "price": 8200.0,
-                "count": 6
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3762-6338-4064-a631-383662663664/stanciya.png"
-          },
-          {
-            "id": "mattresses31",
-            "name": "ЗАКАТ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild3665-3530-4639-b561-396239643566/01_zakat_pro01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild6164-3138-4365-b130-633061343365/03_zakat_pro01.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6332-3264-4432-b562-376464653334/02_zakat_pro01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild3338-3138-4332-b834-643336633330/04_zakat_pro01.png"
-              }
-            ],
-            "sku": "ПРОСТЫНЯ ЗАКАТ",
-            "sizes": [
-              {
-                "size": "140х200х30 см",
-                "price": 6300.0,
-                "count": 9
-              },
-              {
-                "size": "160х200х30 см",
-                "price": 6800.0,
-                "count": 4
-              },
-              {
-                "size": "180х200х30 см",
-                "price": 7700.0,
-                "count": 10
-              },
-              {
-                "size": "200х200х30 см",
-                "price": 8200.0,
-                "count": 13
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3662-3938-4231-b834-653937386165/zakat.png"
-          },
-          {
-            "id": "mattresses27",
-            "name": "РАССВЕТ",
-            "image": [
-              {
-                "kind": "1/2",
-                "url": "https://static.tildacdn.com/tild6463-3431-4337-b234-356336353937/01_rassvet_pro01.png"
-              },
-              {
-                "kind": "2/2",
-                "url": "https://static.tildacdn.com/tild3038-3265-4731-b039-643066383933/03_rassvet_pro01.png"
-              },
-              {
-                "kind": "1/4",
-                "url": "https://static.tildacdn.com/tild6338-6639-4662-b764-336431373837/02_rassvet_pro01.png"
-              },
-              {
-                "kind": "2/4",
-                "url": "https://static.tildacdn.com/tild6664-6138-4536-b233-313335376365/04_rassvet_pro01.png"
-              }
-            ],
-            "sku": "ПРОСТЫНЯ РАССВЕТ",
-            "sizes": [
-              {
-                "size": "140х200х30 см",
-                "price": 6300.0,
-                "count": 9
-              },
-              {
-                "size": "160х200х30 см",
-                "price": 6800.0,
-                "count": 15
-              },
-              {
-                "size": "180х200х30 см",
-                "price": 7700.0,
-                "count": 13
-              },
-              {
-                "size": "200х200х30 см",
-                "price": 8200.0,
-                "count": 10
-              }
-            ],
-            "picture": "https://static.tildacdn.com/tild3232-3365-4531-b035-396434633739/rassvet.png"
-          },
-        ]
-      }
-    };
+  function handleProductsLoadError(error) {
+    console.error('Каталог товаров недоступен:', error);
+    showNotification('Каталог товаров временно недоступен');
+    return { pillows: { items: [] }, blankets: { items: [] }, mattresses: { items: [] } };
+  }
 
-    // // Available sizes
-    // const sizes = {
-    //   pillow: ['50x70', '70x70'],
-    //   blanket: ['150x200', '200x200', '200x220'],
-    //   mattress: ['140x200x30', '160x200x30', '180x200x30', '200x200x30']
-    // };
+  document.addEventListener('DOMContentLoaded', async function() {
+    let products;
+    try {
+      const response = await fetch('https://konstruktor-palicadnik.amvera.io/getProducts');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      products = await response.json();
+    } catch (error) {
+      products = handleProductsLoadError(error);
+    }
 
     // Current selections
-    // В начале скрипта, после объявления products
+    const defaultSelection = (category) => {
+      const product = products[category].items[0];
+      return { product, size: product?.sizes?.[0]?.size };
+    };
     let currentSelections = {
-      pillow1: {
-        product: products.pillows.solids[0],
-        size: products.pillows.solids[0].sizes[0].size
-      },
-      pillow2: {
-        product: products.pillows.solids[0],
-        size: products.pillows.solids[0].sizes[0].size
-      },
-      pillow3: {
-        product: products.pillows.solids[0],
-        size: products.pillows.solids[0].sizes[0].size
-      },
-      pillow4: {
-        product: products.pillows.solids[0],
-        size: products.pillows.solids[0].sizes[0].size
-      },
-      blanket1: {
-        product: products.blankets.solids[0],
-        size: products.blankets.solids[0].sizes[0].size
-      },
-      blanket2: {
-        product: products.blankets.solids[0],
-        size: products.blankets.solids[0].sizes[0].size
-      },
-      mattress: {
-        product: products.mattresses.solids[0],
-        size: products.mattresses.solids[0].sizes[0].size
-      }
+      pillow1: defaultSelection('pillows'),
+      pillow2: defaultSelection('pillows'),
+      pillow3: defaultSelection('pillows'),
+      pillow4: defaultSelection('pillows'),
+      blanket1: defaultSelection('blankets'),
+      blanket2: defaultSelection('blankets'),
+      mattress: defaultSelection('mattresses')
     };
     
     // Initial selections - to reset to default values (TOPLENOE MOLOKO)
@@ -2574,8 +460,6 @@
     
     // User selections - only items that user has explicitly selected
     window.userSelections = {};
-
-    console.log('Start Script 3');
 
 // Переменная для хранения текущей конфигурации
     let currentConfig = '2-1';
@@ -2585,8 +469,6 @@
     };
 // Функция переключения конфигурации
     function switchConfig(config) {
-      console.log('Переключаем конфигурацию на:', config);
-      
       // Hide continue text when switching config (step 0)
       hideContinueText();
 
@@ -2635,22 +517,7 @@
       }, 50);
 
       // 7. Показываем уведомление
-      showNotification(`Выбрана конфигурация: ${config.replace('-', '/')}`);
-    }
-
-    function updateAllImagesForConfig(config) {
-      console.log('updateAllImagesForConfig called with config:', config);
-      const elements = ['pillow1', 'pillow2', 'pillow3', 'pillow4', 'blanket1', 'blanket2', 'mattress'];
-
-      elements.forEach(elementName => {
-        const selection = currentSelections[elementName];
-        if (selection && selection.product) {
-          console.log(`updateAllImagesForConfig: updating ${elementName} with product ${selection.product.name}`);
-          updateSingleImage(elementName, selection.product, config);
-        } else {
-          console.log(`updateAllImagesForConfig: skipping ${elementName}, no selection or product`);
-        }
-      });
+      // showNotification(`Выбрана конфигурация: ${config.replace('-', '/')}`);
     }
 
 // Функция инициализации конфигурации
@@ -2775,7 +642,6 @@
           // Do NOT reset userSelections - we want to preserve selections when going back from step 4 to step 3
           // Only reset currentSelections to default images (without affecting userSelections)
           currentSelections = JSON.parse(JSON.stringify(initialSelections));
-          console.log('Reset currentSelections but kept userSelections:', userSelections);
         } else {
           // Hide continue text
           hideContinueText();
@@ -2829,51 +695,26 @@
           }
         }
         
-        console.log('Back button clicked and handled');
       });
 
       // НЕ устанавливаем конфигурацию по умолчанию - кнопки должны быть прозрачными
       // updateConfiguration(); // Убрано для прозрачных кнопок
 
-      console.log('Конфигурация инициализирована');
     }
 
     // New function to update configuration based on selected counts
     function updateConfiguration() {
       const config = window.selectedPillows + '-' + window.selectedBlankets;
-      console.log('Обновляем конфигурацию на:', config);
       switchConfig(config);
     }
 
-    console.log('Start Script 3');
-
     // DOM elements
     const paletteGrid = document.getElementById('palette-grid');
-    const notification = document.getElementById('notification');
     let currentCustomizing = null;
-    let currentCategory = 'solids';
     let isFirstColorSelected = false;
-
-    // Функция для получения массива размеров из products
-    function getSizesArray(productType, elementId) {
-      if (elementId.includes('pillow')) {
-        // Используем первый продукт для получения размеров наволочек
-        const firstProduct = products.pillows.solids[0];
-        return firstProduct ? firstProduct.sizes.map(size => size.size) : [];
-      } else if (elementId === 'blanket') {
-        const firstProduct = products.blankets.solids[0];
-        return firstProduct ? firstProduct.sizes.map(size => size.size) : [];
-      } else if (elementId === 'mattress') {
-        const firstProduct = products.mattresses.solids[0];
-        return firstProduct ? firstProduct.sizes.map(size => size.size) : [];
-      }
-      return [];
-    }
 
     function updateElementVisibility(config) {
       const [pillowsCount, blanketsCount] = config.split('-').map(Number);
-
-      console.log(`Устанавливаем видимость: ${pillowsCount} подушек, ${blanketsCount} одеял`);
 
       // Обновляем видимость элементов с классами pillow1, pillow2 и т.д.
       for (let i = 1; i <= 4; i++) {
@@ -2900,23 +741,11 @@
     }
 
     function initializeImages() {
-      console.log('Инициализация изображений...');
-
-      // Проверяем, есть ли элементы с нужными классами
-      const elements = ['pillow1', 'pillow2', 'pillow3', 'pillow4', 'blanket1', 'blanket2', 'mattress'];
-      elements.forEach(className => {
-        const element = document.querySelector(`.${className}`);
-        console.log(`${className}: ${element ? 'найден' : 'не найден'}`);
-      });
-
-      // Инициализируем изображения для текущей конфигурации
       updateImagesForConfig(currentConfig);
     }
 
     // Initialize the customizer
     function initCustomizer() {
-      console.log('Start Init');
-
       const buttons = [
         '.pillow1-btn', '.pillow2-btn', '.pillow3-btn', '.pillow4-btn',
         '.blanket1-btn', '.blanket2-btn', '.mattress-btn'
@@ -2924,21 +753,19 @@
 
       buttons.forEach(selector => {
         const btn = document.querySelector(selector);
-        if (btn) {
-          console.log(`Кнопка найдена: ${selector}`);
-        } else {
+        if (!btn) {
           console.warn(`Кнопка не найдена: ${selector}`);
         }
       });
 
-      // Инициализируем конфигурацию ПЕРВОЙ
       initConfiguration();
-      // НЕ устанавливаем начальную конфигурацию - кнопки должны быть прозрачными по умолчанию
-      // switchConfig('2-1'); // Убрано для прозрачных кнопок
+
+      // Применяем дефолтную конфигурацию grp21 без подсветки кнопок-счётчиков
+      document.body.classList.add('active-2-1');
+      updateElementVisibility('2-1');
+      setTimeout(() => updateImagesForConfig('2-1'), 50);
 
       window.addEventListener('click', function(event) {
-        console.log('Глобальный клик по:', event.target);
-
         // 3. Ищем кнопку в пути события
         let targetBtn = event.target;
         let foundButton = false;
@@ -2951,7 +778,6 @@
 
             // Ищем кнопку по классу
             if (classList.some(cls => cls.includes('-btn'))) {
-              console.log('Найдена кнопка в пути:', classList);
               foundButton = targetBtn;
               break;
             }
@@ -2988,8 +814,6 @@
           event.stopPropagation();
           event.stopImmediatePropagation();
           
-          console.log(`✅ КЛИК ПРИНЯТ! Элемент: ${elementId}`);
-          
           // 5. Удаляем класс selected у всех кнопок
           document.querySelectorAll('.pillow1-btn, .pillow2-btn, .pillow3-btn, .pillow4-btn, .blanket1-btn, .blanket2-btn, .mattress-btn').forEach(btn => {
             btn.classList.remove('selected');
@@ -3002,7 +826,7 @@
           currentCustomizing = elementId;
           
           // 8. Показываем уведомление для подтверждения
-          showNotification(`Выбрано: ${elementId}`);
+          // showNotification(`Выбрано: ${elementId}`);
           
           // 9. Очищаем выделение цветов
           const paletteGridElement = document.getElementById('palette-grid');
@@ -3022,7 +846,13 @@
           const step2Indicator = document.getElementById('step2-indicator');
           step2Indicator.innerHTML = '2. ВЫБЕРИТЕ РАЗМЕР (СМ)';
           step2Indicator.style.display = 'block';
-          
+
+          // Прячем палитру и сбрасываем шаг 3 — появятся только после выбора размера
+          document.getElementById('palette-grid').style.display = 'none';
+          const step3Indicator = document.getElementById('step3-indicator');
+          step3Indicator.innerHTML = '3. ВЫБЕРИТЕ ЦВЕТ';
+          step3Indicator.style.display = 'none';
+
           // 12. Загружаем размеры для элемента
           showProductCustomization(elementId,
                   elementId.includes('pillow') ? 'Наволочки' :
@@ -3047,8 +877,6 @@
     // Функция для отображения кастомизации продукта
     function showProductCustomization(elementId, productName) {
       currentCustomizing = elementId;
-
-      console.log(`Начинаем кастомизацию для: ${elementId}, имя: ${productName}`);
 
       // Определяем тип продукта для размеров
       let productType;
@@ -3082,19 +910,10 @@
       // Получаем размеры для данного продукта из JSON
       let sizes = [];
 
-      if (productType === 'pillows') {
-        const firstProduct = products.pillows.solids[0];
-        sizes = firstProduct ? firstProduct.sizes.map(size => size.size) : [];
-      } else if (productType === 'blankets') {
-        const firstProduct = products.blankets.solids[0];
-        sizes = firstProduct ? firstProduct.sizes.map(size => size.size) : [];
-      } else if (productType === 'mattresses') {
-        const firstProduct = products.mattresses.solids[0];
-        sizes = firstProduct ? firstProduct.sizes.map(size => size.size) : [];
-      }
+      const firstProduct = products[productType]?.items?.[0];
+      sizes = firstProduct ? firstProduct.sizes.map(size => size.size) : [];
 
       if (!sizes || sizes.length === 0) {
-        console.log(`No sizes found for ${productType}`);
         return;
       }
 
@@ -3125,24 +944,8 @@
           // Сохраняем выбранный размер
           currentSelections[elementId].size = size;
 
-          // Если это подушка и включен режим "для всех подушек"
-          if (elementId.includes('pillow') && window.applyToAllPillows) {
-            const pillowCount = parseInt(currentConfig.split('-')[0]);
-            for (let i = 1; i <= pillowCount; i++) {
-              currentSelections[`pillow${i}`].size = size;
-            }
-          }
-
-          // Если это одеяло и включен режим "для всех одеял"
-          if (elementId.includes('blanket') && window.applyToAllBlankets) {
-            const blanketCount = parseInt(currentConfig.split('-')[1]);
-            for (let i = 1; i <= blanketCount; i++) {
-              currentSelections[`blanket${i}`].size = size;
-            }
-          }
-
           // Показываем уведомление
-          showNotification(`Размер выбран: ${size}`);
+          // showNotification(`Размер выбран: ${size}`);
           
           // Показываем и обновляем текст третьего шага
           const step3Indicator = document.getElementById('step3-indicator');
@@ -3155,10 +958,6 @@
           // Загружаем палитру цветов с фильтрацией по размеру
           loadSwatches();
           
-          // Сохраняем в localStorage
-          saveToLocalStorage();
-          
-          console.log(`Size selected for ${elementId}:`, size);
         });
 
         buttonsContainer.appendChild(button);
@@ -3170,28 +969,10 @@
       sizeSection.style.display = 'block';
     }
 
-    // Функция для сохранения в localStorage
-    function saveToLocalStorage() {
-      localStorage.setItem('beddingSelections', JSON.stringify(currentSelections));
-    }
-
-    // Функция для загрузки из localStorage
-    function loadFromLocalStorage() {
-      const saved = localStorage.getItem('beddingSelections');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        Object.assign(currentSelections, parsed);
-        console.log('Loaded from localStorage:', currentSelections);
-      }
-    }
-
     // Reset to initial selections (default values)
     function resetToInitial(updateImages) {
-      console.log('resetToInitial called, updateImages:', updateImages);
       currentSelections = JSON.parse(JSON.stringify(initialSelections));
       userSelections = {};
-      console.log('currentSelections reset:', currentSelections);
-      console.log('userSelections reset:', userSelections);
       if (updateImages) {
         updateProductImages();
       }
@@ -3218,27 +999,16 @@
       });
     }
 
-    // Show color palette
-    function showPalette(elementId) {
-      currentCustomizing = elementId;
-      loadSwatches();
-    }
-
     // Load swatches for current selection
     function loadSwatches() {
-      console.log(`Загрузка цветов для: ${currentCustomizing}`);
-
       paletteGrid.innerHTML = '';
 
       if (!currentCustomizing) {
-        console.log('Нет выбранного элемента для кастомизации');
         return;
       }
 
       const productType = currentCustomizing.includes('pillow') ? 'pillows' :
               currentCustomizing.includes('blanket') ? 'blankets' : 'mattresses';
-
-      console.log(`Тип продукта: ${productType}`);
 
       // Проверяем существование данных
       if (!products[productType]) {
@@ -3249,13 +1019,8 @@
 
       // Получаем выбранный размер для текущего элемента
       const selectedSize = currentSelections[currentCustomizing]?.size;
-      console.log(`Выбранный размер: ${selectedSize}`);
 
-      // Combine all products from all categories
-      let allProducts = [];
-      for (const category in products[productType]) {
-        allProducts = allProducts.concat(products[productType][category]);
-      }
+      const allProducts = products[productType].items || [];
 
       // Фильтруем продукты по выбранному размеру, если размер выбран
       let filteredProducts = allProducts;
@@ -3263,10 +1028,7 @@
         filteredProducts = allProducts.filter(product => {
           return product.sizes && product.sizes.some(sizeObj => sizeObj.size === selectedSize);
         });
-        console.log(`Отфильтровано до ${filteredProducts.length} продуктов с размером ${selectedSize}`);
       }
-
-      console.log(`Найдено ${filteredProducts.length} продуктов в ${productType}`);
 
       if (filteredProducts.length === 0) {
         paletteGrid.innerHTML = '<p>Нет доступных вариантов</p>';
@@ -3280,7 +1042,6 @@
         // Используем picture для превью цвета
         if (product.picture) {
           swatch.style.backgroundImage = `url('${product.picture}')`;
-          console.log(`Добавлен образец ${index}: ${product.name}, картинка: ${product.picture}`);
         } else {
           console.warn(`Нет картинки для продукта: ${product.name}`);
           swatch.style.backgroundColor = '#ccc'; // Запасной цвет
@@ -3295,8 +1056,6 @@
         // }
 
         swatch.addEventListener('click', () => {
-          console.log(`Клик на образец: ${product.name}`);
-          
           // Удаляем класс selected у всех образцов
           paletteGrid.querySelectorAll('.color-swatch').forEach(s => {
             s.classList.remove('selected');
@@ -3311,7 +1070,6 @@
         paletteGrid.appendChild(swatch);
       });
 
-      console.log(`Загружено ${filteredProducts.length} образцов`);
     }
 
     // Select a product
@@ -3319,7 +1077,6 @@
       if (!currentCustomizing) return;
 
       const currentConfig = window.beddingState?.config || '2-1';
-      console.log('Обновляем ВСЕ изображения для:', currentCustomizing);
 
       // 1. Получаем новый URL
       const newImageUrl = getImageUrlForElement(product, currentCustomizing, currentConfig);
@@ -3347,7 +1104,6 @@
       selectors.forEach(selector => {
         const elements = document.querySelectorAll(selector);
         elements.forEach(el => {
-          console.log('Найден элемент для обновления:', el);
           // Меняем src
           if (el.src !== newImageUrl) {
             el.src = newImageUrl;
@@ -3379,10 +1135,7 @@
           product: product,
           size: currentSelections[currentCustomizing].size
         };
-        saveToLocalStorage();
-        showNotification('Цвет выбран! Обновлено элементов: ' + updatedCount);
-        console.log('Успешно обновлено элементов:', updatedCount);
-        
+        // showNotification('Цвет выбран! Обновлено элементов: ' + updatedCount);
         // Показываем текст и меняем кнопку после первого выбора цвета
         showContinueTextAndUpdateButton();
         
@@ -3398,8 +1151,6 @@
         step3Indicator.innerHTML = `3. ВЫБЕРИТЕ ЦВЕТ: <span class="product-name">${product.name} ${formattedPrice} ₽</span>`;
       } else {
         console.error('Не найдено ни одного изображения для обновления');
-        // Диагностика: выведем все изображения
-        console.log('Все изображения на странице:', document.querySelectorAll('img'));
       }
     }
 
@@ -3459,13 +1210,10 @@
       }
 
       const kindToFind = getKindForElement(elementName, config);
-      console.log(`Ищем kind "${kindToFind}" для ${elementName} (конфигурация: ${config})`);
-
       // Сначала ищем точное совпадение
       let imageObj = product.image.find(img => img.kind === kindToFind);
 
       if (imageObj) {
-        console.log(`Найдено точное совпадение: ${imageObj.url.substring(0, 50)}...`);
         return imageObj.url;
       }
 
@@ -3479,7 +1227,6 @@
         if (pillowsCount === 2) {
           imageObj = product.image.find(img => img.kind.includes('/2'));
           if (imageObj) {
-            console.log(`Используем изображение для 2 подушек: ${imageObj.kind}`);
             return imageObj.url;
           }
         }
@@ -3487,7 +1234,6 @@
         else if (pillowsCount === 4) {
           imageObj = product.image.find(img => img.kind.includes('/4'));
           if (imageObj) {
-            console.log(`Используем изображение для 4 подушек: ${imageObj.kind}`);
             return imageObj.url;
           }
         }
@@ -3499,7 +1245,6 @@
         if (blanketsCount === 1) {
           imageObj = product.image.find(img => img.kind === '1/1/2' || img.kind.includes('/2'));
           if (imageObj) {
-            console.log(`Используем изображение для 1 одеяла: ${imageObj.kind}`);
             return imageObj.url;
           }
         }
@@ -3507,7 +1252,6 @@
         else if (blanketsCount === 2) {
           imageObj = product.image.find(img => img.kind.includes('/2'));
           if (imageObj) {
-            console.log(`Используем изображение для 2 одеял: ${imageObj.kind}`);
             return imageObj.url;
           }
         }
@@ -3518,21 +1262,18 @@
         const mattressKind = `${blanketsCount}/${pillowsCount}`;
         imageObj = product.image.find(img => img.kind === mattressKind);
         if (imageObj) {
-          console.log(`Используем изображение для простыни: ${imageObj.kind}`);
           return imageObj.url;
         }
-        
+
         // Если не нашли точное совпадение, ищем по количеству подушек
         if (pillowsCount === 2) {
           imageObj = product.image.find(img => img.kind.includes('/2'));
           if (imageObj) {
-            console.log(`Используем изображение для простыни с 2 подушками: ${imageObj.kind}`);
             return imageObj.url;
           }
         } else if (pillowsCount === 4) {
           imageObj = product.image.find(img => img.kind.includes('/4'));
           if (imageObj) {
-            console.log(`Используем изображение для простыни с 4 подушками: ${imageObj.kind}`);
             return imageObj.url;
           }
         }
@@ -3551,8 +1292,6 @@
 
     // Добавим функцию обновления всех изображений при смене конфигурации
     function updateImagesForConfig(config) {
-      console.log(`Обновляем изображения для конфигурации ${config}`);
-
       const [pillowsCount, blanketsCount] = config.split('-').map(Number);
 
       // Обновляем видимые подушки
@@ -3561,7 +1300,6 @@
         const selection = currentSelections[elementName];
 
         if (i <= pillowsCount && selection && selection.product) {
-          console.log(`Обновляем ${elementName} (подушка ${i}/${pillowsCount})`);
           updateSingleImage(elementName, selection.product, config);
         }
       }
@@ -3572,14 +1310,12 @@
         const selection = currentSelections[elementName];
 
         if (i <= blanketsCount && selection && selection.product) {
-          console.log(`Обновляем ${elementName} (одеяло ${i}/${blanketsCount})`);
           updateSingleImage(elementName, selection.product, config);
         }
       }
 
       // Обновляем простыню
       if (currentSelections.mattress && currentSelections.mattress.product) {
-        console.log('Обновляем mattress');
         updateSingleImage('mattress', currentSelections.mattress.product, config);
       }
     }
@@ -3587,8 +1323,6 @@
 
 // Упрощенная и исправленная функция updateSingleImage для работы с классами Tilda
     function updateSingleImage(elementName, product, config) {
-      console.log(`Обновляем изображение для ${elementName}, продукт: ${product.name}, конфигурация: ${config}`);
-
       // В Tilda классы: pillow1-img-grpXX, pillow2-img-grpXX, blanket1-img-grpXX, blanket2-img-grpXX, mattress-img-grpXX
       // Ищем элемент по точному классу с учетом конфигурации
       const [pillowsCount, blanketsCount] = config.split('-').map(Number);
@@ -3610,19 +1344,12 @@
                   el.className.includes(elementName + '-img');
         });
 
-        console.log(`Найдены похожие элементы:`, relevantElements.map(el => ({
-          className: el.className,
-          tagName: el.tagName
-        })));
-
         return;
       }
 
       const imageUrl = getImageUrlForElement(product, elementName, config);
 
       if (imageUrl && imageUrl !== imgElement.src) {
-        console.log(`Устанавливаем новое изображение для ${elementName}: ${imageUrl.substring(0, 50)}...`);
-
         // Добавляем анимацию перехода
         imgElement.style.transition = 'opacity 0.3s';
         imgElement.style.opacity = '0.7';
@@ -3634,7 +1361,6 @@
           setTimeout(() => {
             imgElement.style.opacity = '1';
           }, 50);
-          console.log(`Изображение успешно загружено для ${elementName}`);
         };
 
         newImg.onerror = function() {
@@ -3644,15 +1370,12 @@
           // Пробуем загрузить запасной вариант
           const fallbackUrl = getFallbackImageUrl(product, elementName, config);
           if (fallbackUrl && fallbackUrl !== imageUrl) {
-            console.log(`Пробуем запасной URL: ${fallbackUrl}`);
             imgElement.src = fallbackUrl;
           }
         };
 
         newImg.src = imageUrl;
-      } else if (imageUrl) {
-        console.log(`Изображение для ${elementName} уже установлено`);
-      } else {
+      } else if (!imageUrl) {
         console.error(`Не удалось получить URL для ${elementName}`);
       }
     }
@@ -3665,7 +1388,6 @@
       const availableImage = product.image.find(img => img.url && !img.url.includes('_.png'));
 
       if (availableImage) {
-        console.log(`Используем запасное изображение с kind=${availableImage.kind}`);
         return availableImage.url;
       }
 
@@ -3680,12 +1402,13 @@
 
     // Show notification
     window.showNotification = function(message) {
-      if (notification) {
-        notification.textContent = message;
-        notification.classList.add('show');
+      const el = document.getElementById('notification');
+      if (el) {
+        el.textContent = message;
+        el.classList.add('show');
 
         setTimeout(() => {
-          notification.classList.remove('show');
+          el.classList.remove('show');
         }, 3000);
       }
     };
@@ -3773,7 +1496,7 @@
           itemElement.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <span>${productType} ${selection.product.name} ${selection.size}</span>
-              <span>${formattedPrice} ₽ <button class="remove-item" data-item="${key}" style="background: none; border: none; cursor: pointer; font-size: 18px; color: #999;">×</button></span>
+              <span style="white-space: nowrap;">${formattedPrice} ₽ <button class="remove-item" data-item="${key}" style="background: none; border: none; cursor: pointer; font-size: 18px; color: #999;">×</button></span>
             </div>
           `;
           orderItemsContainer.appendChild(itemElement);
@@ -3808,14 +1531,11 @@
       else if (pillowsCount === 4 && blanketsCount === 2) groupSuffix = 'grp42';
 
       // Find the default product (ТОПЛЕНОЕ МОЛОКО)
-      let defaultProduct = null;
-      if (itemKey.includes('pillow')) {
-        defaultProduct = products.pillows.solids[0];
-      } else if (itemKey.includes('blanket')) {
-        defaultProduct = products.blankets.solids[0];
-      } else if (itemKey === 'mattress') {
-        defaultProduct = products.mattresses.solids[0];
-      }
+      const category = itemKey.includes('pillow') ? 'pillows'
+                     : itemKey.includes('blanket') ? 'blankets'
+                     : itemKey === 'mattress' ? 'mattresses'
+                     : null;
+      const defaultProduct = category ? products[category].items[0] : null;
 
       if (defaultProduct) {
         const elementId = itemKey + '-img-' + groupSuffix;
@@ -3835,7 +1555,7 @@
       showOrderSummary();
       
       // Show notification
-      showNotification('Товар удален из заказа');
+      // showNotification('Товар удален из заказа');
     }
 
     initCustomizer();
