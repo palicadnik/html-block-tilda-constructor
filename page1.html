@@ -389,22 +389,12 @@
           const product = selection.product;
           const size = selection.size;
 
-          // Generate final SKU and name with size
-          const finalSku = generateSkuWithSize(product.sku, size);
-          const displayName = generateDisplayName(product.name, size);
-
           // Find price for selected size
           const sizeObj = product.sizes.find(s => s.size === size);
           const price = sizeObj ? sizeObj.price : 0;
+          const cartProduct = buildTildaCartProduct(product, size, sizeObj, price);
 
-          // externalid — идентификатор модификации для синхронизации остатков Tilda ↔ МойСклад
-          tcart__addProduct({
-            name: displayName,
-            price: price,
-            sku: finalSku,
-            img: product.picture,
-            externalid: sizeObj?.externalCode,
-          });
+          tcart__addProduct(cartProduct);
         }
       });
 
@@ -430,12 +420,163 @@
     return { pillows: { items: [] }, blankets: { items: [] }, mattresses: { items: [] } };
   }
 
+  const TILDA_STORE_CATALOGS = {
+    pillows: [
+      { recid: '1488287021', storepartuid: '738568870771' },
+      { recid: '2129677441', storepartuid: '866245902672' }
+    ],
+    blankets: [
+      { recid: '595008143', storepartuid: '774656928841' },
+      { recid: '2129686241', storepartuid: '872333661362' }
+    ],
+    mattresses: [
+      { recid: '1488291171', storepartuid: '398417292891' },
+      { recid: '2129708641', storepartuid: '337586719402' }
+    ]
+  };
+
+  function parseTildaJson(value, fallback) {
+    if (!value) return fallback;
+    if (Array.isArray(value)) return value;
+    try {
+      return JSON.parse(value);
+    } catch (error) {
+      console.warn('Не удалось разобрать данные Tilda:', value, error);
+      return fallback;
+    }
+  }
+
+  function parseTildaPrice(value) {
+    if (typeof value === 'number') return value;
+    if (!value) return 0;
+    return Number(String(value).replace(/\s/g, '').replace(',', '.')) || 0;
+  }
+
+  function getTildaOptionVariant(edition, size) {
+    return edition['Размер'] || size;
+  }
+
+  function getFirstTildaGalleryImage(product) {
+    const gallery = parseTildaJson(product.gallery, []);
+    const firstImage = gallery.find(item => item && item.img);
+    return firstImage ? firstImage.img : '';
+  }
+
+  function sortSizes(sizes) {
+    return sizes.sort((a, b) => {
+      const aNumbers = a.match(/\d+/g)?.map(Number) || [];
+      const bNumbers = b.match(/\d+/g)?.map(Number) || [];
+      for (let i = 0; i < Math.max(aNumbers.length, bNumbers.length); i++) {
+        const diff = (aNumbers[i] || 0) - (bNumbers[i] || 0);
+        if (diff !== 0) return diff;
+      }
+      return a.localeCompare(b, 'ru');
+    });
+  }
+
+  function buildTildaCartProduct(product, size, sizeObj, price) {
+    const tilda = sizeObj?.tilda;
+    if (tilda) {
+      return {
+        name: tilda.name,
+        price: tilda.price || price,
+        img: tilda.img || product.picture,
+        recid: tilda.recid,
+        lid: tilda.lid,
+        uid: tilda.uid,
+        pack_label: tilda.pack_label,
+        pack_m: tilda.pack_m,
+        pack_x: tilda.pack_x,
+        pack_y: tilda.pack_y,
+        pack_z: tilda.pack_z,
+        part_uids: tilda.part_uids,
+        gen_uid: tilda.gen_uid,
+        url: tilda.url,
+        options: tilda.options,
+        inv: tilda.inv
+      };
+    }
+
+    return {
+      name: generateDisplayName(product.name, size),
+      price: price,
+      sku: generateSkuWithSize(product.sku, size),
+      img: product.picture,
+      externalid: sizeObj?.externalCode
+    };
+  }
+
+  async function enrichProductsWithTildaMetadata(products) {
+    const catalogEntries = Object.entries(TILDA_STORE_CATALOGS);
+
+    await Promise.all(catalogEntries.map(async ([productType, catalogs]) => {
+      const items = products[productType]?.items || [];
+      if (!items.length) return;
+
+      const tildaByExternalCode = new Map();
+
+      for (const catalog of catalogs) {
+        const response = await fetch(
+          `https://store.tildaapi.com/api/getproductslist/?getoptions=true&getparts=true&recid=${catalog.recid}&size=100&slice=1&storepartuid=${catalog.storepartuid}`
+        );
+        if (!response.ok) throw new Error(`Tilda ${productType}: HTTP ${response.status}`);
+
+        const tildaCatalog = await response.json();
+
+        (tildaCatalog.products || []).forEach(tildaProduct => {
+          const partUids = parseTildaJson(tildaProduct.partuids, []);
+          const image = getFirstTildaGalleryImage(tildaProduct);
+
+          (tildaProduct.editions || []).forEach(edition => {
+            if (!edition.externalid) return;
+
+            tildaByExternalCode.set(edition.externalid, {
+              name: tildaProduct.title,
+              price: parseTildaPrice(edition.price || tildaProduct.price),
+              img: edition.img || image,
+              recid: catalog.recid,
+              lid: String(edition.uid),
+              uid: String(edition.uid),
+              pack_label: tildaProduct.pack_label,
+              pack_m: String(tildaProduct.pack_m || ''),
+              pack_x: String(tildaProduct.pack_x || ''),
+              pack_y: String(tildaProduct.pack_y || ''),
+              pack_z: String(tildaProduct.pack_z || ''),
+              part_uids: partUids.map(String),
+              gen_uid: String(tildaProduct.uid),
+              url: tildaProduct.url,
+              options: [{ option: 'Размер', variant: getTildaOptionVariant(edition, ''), price: 0 }],
+              inv: parseInt(edition.quantity, 10) || undefined
+            });
+          });
+        });
+      }
+
+      items.forEach(product => {
+        (product.sizes || []).forEach(sizeObj => {
+          const tilda = tildaByExternalCode.get(sizeObj.externalCode);
+          if (tilda) {
+            sizeObj.tilda = {
+              ...tilda,
+              options: [{ option: 'Размер', variant: getTildaOptionVariant(tilda, sizeObj.size), price: 0 }]
+            };
+          }
+        });
+      });
+    }));
+  }
+
   document.addEventListener('DOMContentLoaded', async function() {
     let products;
     try {
       const response = await fetch('https://konstruktor-palicadnik.amvera.io/getProducts');
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       products = await response.json();
+      try {
+        await enrichProductsWithTildaMetadata(products);
+      } catch (error) {
+        console.warn('Не удалось загрузить метаданные товаров Tilda:', error);
+      }
     } catch (error) {
       products = handleProductsLoadError(error);
     }
@@ -910,8 +1051,14 @@
       // Получаем размеры для данного продукта из JSON
       let sizes = [];
 
-      const firstProduct = products[productType]?.items?.[0];
-      sizes = firstProduct ? firstProduct.sizes.map(size => size.size) : [];
+      sizes = [
+        ...new Set(
+          (products[productType]?.items || []).flatMap(product =>
+            (product.sizes || []).map(size => size.size)
+          )
+        )
+      ];
+      sizes = sortSizes(sizes);
 
       if (!sizes || sizes.length === 0) {
         return;
